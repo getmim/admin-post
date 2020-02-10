@@ -1,0 +1,65 @@
+<form  method="POST" class="needs-validation main" novalidate>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white navbar-shadow">
+        <div class="navbar-multiline mr-auto">
+            <span class="navbar-brand" href="#0">Post Editor</span>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="<?= $this->router->to('adminHome') ?>">Home</a></li>
+                    <li class="breadcrumb-item"><a href="<?= $this->router->to('adminPost') ?>">Post</a></li>
+                    <li class="breadcrumb-item active" aria-current="page"><?= $subtitle ?></li>
+                </ol>
+            </nav>
+        </div>
+        <button class="btn btn-primary">Save</button>
+    </nav>
+
+    <div class="container p-3">
+        <div class="row mb-3">
+            <?= $form->csrfField('noob') ?>
+            <div class="col-md-9">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <?= $form->field('title'); ?>
+                            </div>
+                            <div class="col-md-6">
+                                <?= $form->field('slug'); ?>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <?= $form->field('content'); ?>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <?= $form->field('cover-url'); ?>
+                                <?= $form->field('cover-label'); ?>
+                            </div>
+                            <div class="col-md-4">
+                                <?= $form->field('embed'); ?>
+                                <?= $form->field('status', $statuses) ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <?= $this->partial('site-meta/meta'); ?>
+                        <?php if($this->can_i->feature_post): ?>
+                            <?= $form->field('featured'); ?>
+                        <?php endif; ?>
+                        <?php if($this->can_i->editor_pick_post): ?>
+                        <?= $form->field('editor_pick'); ?>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
