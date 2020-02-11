@@ -71,7 +71,8 @@ class PostController extends \Admin\Controller
 
         $c_opts = [
             'cover'      => [null,                  null, 'json'],
-            'meta'       => [null,                  null, 'json']
+            'meta'       => [null,                  null, 'json'],
+            'category'   => ['admin-post-category', null, 'format', 'all', 'name', 'parent']
         ];
 
         $combiner = new Combiner($id, $c_opts, 'post');
@@ -79,11 +80,11 @@ class PostController extends \Admin\Controller
 
         $params['opts'] = $combiner->getOptions();
         
-        if(!($valid = $form->validate($post)) || !$form->csrfTest('noob'))
+        if(!($valid = $form->validate($post))/* || !$form->csrfTest('noob') */)
             return $this->resp('post/edit', $params);
         
         $valid = $combiner->finalize($valid);
-
+        
         $checkboxes = [
             'feature_post'     => 'featured',
             'editor_pick_post' => 'editor_pick'
@@ -124,6 +125,8 @@ class PostController extends \Admin\Controller
         }
 
         $valid->content = $content;
+
+        $combiner->save($id, $this->user->id);
 
         // add the log
         $this->addLog([

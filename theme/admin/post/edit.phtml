@@ -43,6 +43,11 @@
                                 <?= $form->field('embed'); ?>
                                 <?= $form->field('status', $statuses) ?>
                             </div>
+                            <div class="col-md-4">
+                                <?php if(module_exists('admin-post-category')): ?>
+                                    <?= $form->field('category', $opts['category']); ?>
+                                <?php endif; ?>
+                            </div>
                         </div>
                     </div>
                 </div>
