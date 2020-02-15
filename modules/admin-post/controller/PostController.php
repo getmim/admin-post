@@ -72,7 +72,8 @@ class PostController extends \Admin\Controller
         $c_opts = [
             'cover'      => [null,                  null, 'json'],
             'meta'       => [null,                  null, 'json'],
-            'category'   => ['admin-post-category', null, 'format', 'all', 'name', 'parent']
+            'category'   => ['admin-post-category', null, 'format', 'all', 'name', 'parent'],
+            'gallery'    => ['admin-post-gallery',  null, 'format', 'active', 'title']
         ];
 
         $combiner = new Combiner($id, $c_opts, 'post');
@@ -80,7 +81,7 @@ class PostController extends \Admin\Controller
 
         $params['opts'] = $combiner->getOptions();
         
-        if(!($valid = $form->validate($post))/* || !$form->csrfTest('noob') */)
+        if(!($valid = $form->validate($post)) || !$form->csrfTest('noob'))
             return $this->resp('post/edit', $params);
         
         $valid = $combiner->finalize($valid);

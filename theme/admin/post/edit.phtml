@@ -47,6 +47,9 @@
                                 <?php if(module_exists('admin-post-category')): ?>
                                     <?= $form->field('category', $opts['category']); ?>
                                 <?php endif; ?>
+                                <?php if(module_exists('admin-post-gallery')): ?>
+                                    <?= $form->field('gallery', $opts['gallery']); ?>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
