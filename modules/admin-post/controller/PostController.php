@@ -73,7 +73,8 @@ class PostController extends \Admin\Controller
             'cover'      => [null,                  null, 'json'],
             'meta'       => [null,                  null, 'json'],
             'category'   => ['admin-post-category', null, 'format', 'all', 'name', 'parent'],
-            'gallery'    => ['admin-post-gallery',  null, 'format', 'active', 'title']
+            'gallery'    => ['admin-post-gallery',  null, 'format', 'active', 'title'],
+            'website'    => ['admin-post-website',  null, 'format', 'all', 'name']
         ];
 
         $combiner = new Combiner($id, $c_opts, 'post');

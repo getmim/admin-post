@@ -38,18 +38,21 @@
                             <div class="col-md-4">
                                 <?= $form->field('cover-url'); ?>
                                 <?= $form->field('cover-label'); ?>
+                                <?php if(module_exists('admin-post-website')): ?>
+                                    <?= $form->field('website', $opts['website']); ?>
+                                <?php endif; ?>
                             </div>
                             <div class="col-md-4">
                                 <?= $form->field('embed'); ?>
-                                <?= $form->field('status', $statuses) ?>
+                                <?php if(module_exists('admin-post-gallery')): ?>
+                                    <?= $form->field('gallery', $opts['gallery']); ?>
+                                <?php endif; ?>
                             </div>
                             <div class="col-md-4">
                                 <?php if(module_exists('admin-post-category')): ?>
                                     <?= $form->field('category', $opts['category']); ?>
                                 <?php endif; ?>
-                                <?php if(module_exists('admin-post-gallery')): ?>
-                                    <?= $form->field('gallery', $opts['gallery']); ?>
-                                <?php endif; ?>
+                                <?= $form->field('status', $statuses) ?>
                             </div>
                         </div>
                     </div>
