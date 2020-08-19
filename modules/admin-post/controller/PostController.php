@@ -165,7 +165,7 @@ class PostController extends \Admin\Controller
 
         list($page, $rpp) = $this->req->getPager(25, 50);
 
-        $posts = Post::get($cond, $rpp, $page, ['title'=>true]) ?? [];
+        $posts = Post::get($cond, $rpp, $page, ['created'=>false]) ?? [];
         if($posts)
             $posts = Formatter::formatMany('post', $posts, ['user']);
 
