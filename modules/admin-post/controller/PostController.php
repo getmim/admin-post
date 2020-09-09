@@ -104,6 +104,9 @@ class PostController extends \Admin\Controller
         if(!$this->can_i->publish_post){
             if($valid->status == 3 && $post->status != 3)
                 $valid->status = $post->status;
+        }else{
+            if($valid->status == 3 && $post->status != 3)
+                $valid->published = date('Y-m-d H:i:s');
         }
 
         $content = $valid->content ?? '';
