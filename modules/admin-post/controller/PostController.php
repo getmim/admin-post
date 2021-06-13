@@ -2,7 +2,7 @@
 /**
  * PostController
  * @package admin-post
- * @version 0.0.1
+ * @version 0.0.5
  */
 
 namespace AdminPost\Controller;
@@ -96,8 +96,7 @@ class PostController extends \Admin\Controller
                 if(isset($valid->$prop))
                     unset($valid->$prop);
             }else{
-                if(isset($valid->$prop))
-                    $valid->$prop = false;
+                $valid->$prop = isset($valid->$prop);
             }
         }
 
