@@ -35,7 +35,12 @@
                 <?php $csrf = $form->csrfToken(); ?>
                 <ul class="list-group list-group-flush card mb-3">
                     <?php foreach($posts as $post): ?>
-                        <li class="list-group-item">
+                        <?php
+                            $plagiarism = false;
+                            if (isset($post->plagiarism) && $post->plagiarism->value)
+                                $plagiarism = $post->plagiarism;
+                        ?>
+                        <li class="list-group-item<?= ($plagiarism?' plagiarism':'') ?>">
                             <div class="d-flex w-100 justify-content-between">
                                 <h5 class="mb-1">
                                     <?= $post->title->safe ?>
@@ -87,6 +92,12 @@
                                     </span>
                                 <?php endif; ?>
                             </small>
+                            <?php if($plagiarism): ?>
+                                <br>
+                                <small>
+                                    <i class="fas fa-copyright"></i> <?= $plagiarism->safe ?>
+                                </small>
+                            <?php endif; ?>
                         </li>
                     <?php endforeach; ?>
                 </ul>
@@ -98,3 +109,22 @@
         </div>
     </div>
 </div>
+
+<style>
+.plagiarism {
+    overflow: hidden;
+}
+.plagiarism:before {
+    transform: rotate(-45deg);
+    content: 'plagiarism';
+    position: absolute;
+    color: white;
+    padding: 0 5px;
+    background-color: red;
+    font-size: 10px;
+    text-align: center;
+    width: 100px;
+    left: -20px;
+    top: 22px;
+}
+</style>

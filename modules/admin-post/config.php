@@ -2,7 +2,7 @@
 
 return [
     '__name' => 'admin-post',
-    '__version' => '0.0.5',
+    '__version' => '0.1.0',
     '__git' => 'git@github.com:getmim/admin-post.git',
     '__license' => 'MIT',
     '__author' => [
@@ -162,6 +162,7 @@ return [
                 'content' => [
                     'label' => 'About',
                     'type' => 'summernote',
+                    'upload' => 'std-image',
                     'rules' => [
                         'required' => true
                     ]

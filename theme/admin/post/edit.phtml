@@ -47,6 +47,11 @@
                                 <?php if(module_exists('admin-post-gallery')): ?>
                                     <?= $form->field('gallery', $opts['gallery']); ?>
                                 <?php endif; ?>
+                                <?php if(module_exists('admin-post-plagiarism')): ?>
+                                    <?php if($this->can_i->plagiarism_post): ?>
+                                        <?= $form->field('plagiarism'); ?>
+                                    <?php endif; ?>
+                                <?php endif; ?>
                             </div>
                             <div class="col-md-4">
                                 <?php if(module_exists('admin-post-category')): ?>

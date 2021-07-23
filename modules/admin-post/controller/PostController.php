@@ -108,6 +108,10 @@ class PostController extends \Admin\Controller
                 $valid->published = date('Y-m-d H:i:s');
         }
 
+        // plagiarism
+        if(isset($valid->plagiarism) && !$this->can_i->plagiarism_post)
+            unset($valid->plagiarism);
+
         $content = $valid->content ?? '';
         unset($valid->content);
 
