@@ -1,3 +1,6 @@
+<?php
+    $setable_price = module_exists('admin-post-pricing') && $this->can_i->set_content_pricing;
+?>
 <nav class="navbar navbar-expand-lg navbar-light bg-white navbar-shadow">
     <div class="navbar-multiline mr-auto">
         <span class="navbar-brand" href="#0">Post Editor</span>
@@ -57,7 +60,31 @@
                                         <?php endif; ?>
                                         <div class="btn-group btn-group-sm" role="group">
                                             <button id="post-action-<?= $post->id ?>" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
-                                            <div class="dropdown-menu" aria-labelledby="post-action-<?= $post->id ?>">
+                                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="post-action-<?= $post->id ?>">
+                                                <?php if($setable_price): ?>
+                                                    <?php
+                                                        $price = $post->pricing ?? (object)[
+                                                            'id' => 0,
+                                                            'price' => 0,
+                                                            'month' => new DateTime('NOW')
+                                                        ];
+                                                        $data = [
+                                                            'id'    => $price->id,
+                                                            'object'=> $post->id,
+                                                            'price' => $price->price,
+                                                            'month' => $price->month->format('Y-m'),
+                                                            'type'  => 'post'
+                                                        ];
+                                                    ?>
+                                                    <a
+                                                        data-object="<?= hs(json_encode($data)) ?>"
+                                                        class="dropdown-item"
+                                                        data-target="#pricing-set"
+                                                        data-toggle="modal"
+                                                        href="#0">
+                                                        Set Pricing
+                                                    </a>
+                                                <?php endif; ?>
                                                 <a class="dropdown-item"
                                                     data-toggle="confirm"
                                                     data-text="Are you sure want to remove this item?"
@@ -100,7 +127,16 @@
                             <?php if($plagiarism): ?>
                                 <br>
                                 <small>
-                                    <i class="fas fa-copyright"></i> <?= $plagiarism->safe ?>
+                                    <i class="fas fa-copyright"></i>
+                                    <?= $plagiarism->safe ?>
+                                </small>
+                            <?php endif; ?>
+
+                            <?php if(isset($post->pricing)): ?>
+                                <br>
+                                <small title="Price" class="text-info">
+                                    IDR
+                                    <?= $post->pricing->price->format() ?>
                                 </small>
                             <?php endif; ?>
                         </li>
@@ -114,6 +150,50 @@
         </div>
     </div>
 </div>
+
+<?php if($setable_price): ?>
+<form method="POST" class="modal fade" tabindex="-1" role="dialog" id="pricing-set">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Set Content Pricing</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="hidden">
+                    <?= $f_pricing->field('type') ?>
+                    <?= $f_pricing->field('object') ?>
+                    <?= $f_pricing->csrfField('noob') ?>
+                    <input type="hidden" name="reff" value="<?= hs($this->req->url) ?>">
+                </div>
+                <?= $f_pricing->field('price') ?>
+                <?= $f_pricing->field('month') ?>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+    document.addEventListener('DOMContentLoaded', function(){
+        $('#pricing-set').on('show.bs.modal', function(e){
+            var target = $(e.relatedTarget);
+            var data   = target.data('object');
+            $('#admin-content-pricing-edit-fld-month').val( data.month );
+            $('#admin-content-pricing-edit-fld-price').val( data.price );
+            $('#admin-content-pricing-edit-fld-object').val( data.object );
+            $('#admin-content-pricing-edit-fld-type').val( data.type );
+
+            var target = '<?= $this->router->to('adminContentPricingEdit', ['id'=>'-ID-']) ?>'.replace('-ID-', data.id);
+            $('#pricing-set').attr('action', target);
+        });
+    }, false);
+</script>
+<?php endif; ?>
 
 <style>
 .plagiarism {

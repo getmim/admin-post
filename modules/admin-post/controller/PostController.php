@@ -15,6 +15,7 @@ use Post\Model\{
     Post,
     PostContent as PContent
 };
+use ContentPricing\Model\Pricing;
 
 class PostController extends \Admin\Controller
 {
@@ -172,12 +173,49 @@ class PostController extends \Admin\Controller
         list($page, $rpp) = $this->req->getPager(25, 50);
 
         $posts = Post::get($cond, $rpp, $page, ['created'=>false]) ?? [];
-        if($posts)
+        if($posts){
             $posts = Formatter::formatMany('post', $posts, ['user']);
+
+            $price_mine = $this->can_i->read_content_pricing;
+            $price_all  = $this->can_i->read_content_pricing_all;
+            if ($price_mine || $price_all) {
+                if (module_exists('admin-post-pricing')) {
+                    $post_ids = array_column($posts, 'id');
+                    $pricings = Pricing::get([
+                        'object' => $post_ids,
+                        'type' => 'post'
+                    ]);
+
+                    if ($pricings) {
+                        $pricings = Formatter::formatMany('content-pricing', $pricings);
+                        $pricings_temp = [];
+                        foreach ($pricings as $price) {
+                            $pricings_temp[$price->object->id->value] = $price;
+                        }
+
+                        $pricings = $pricings_temp;
+
+                        foreach ($posts as &$post) {
+                            if (isset($pricings[$post->id->value])) {
+                                if (!$price_all && $post->user->id != $this->user->id) {
+                                    continue;
+                                }
+                                $post->pricing = $pricings[$post->id->value];
+                            }
+                        }
+                        unset($post);
+                    }
+                }
+            }
+        }
 
         $params          = $this->getParams('Post');
         $params['posts'] = $posts;
         $params['form']  = new Form('admin.post.index');
+
+        if (module_exists('admin-post-pricing') && $this->can_i->set_content_pricing) {
+            $params['f_pricing'] = new Form('admin.content-pricing.edit');
+        }
 
         $params['form']->validate( (object)$this->req->get() );
 
